@@ -1,14 +1,12 @@
-// components/Hero.tsx
 'use client';
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Bot, Cpu } from 'lucide-react';
 
-export const Hero = () => {
+const Hero = () => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const text = "Professor AI";
-
+  
   useEffect(() => {
     if (currentIndex < text.length) {
       const timeout = setTimeout(() => {
@@ -21,35 +19,48 @@ export const Hero = () => {
   }, [currentIndex]);
 
   return (
-    <div className="relative min-h-[10vh] max-h-[20vh] sm:max-h-[50vh] flex flex-col items-center justify-center bg-[#1a1f36]   sm:pt-32 pb-10 sm:pb-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="text-center w-full max-w-5xl px-4 sm:px-6"
-      >
-        <div className="flex items-center justify-center space-x-2 sm:space-x-4">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          >
-            <Sparkles className="w-8 h-8 sm:w-12 sm:h-12 text-[#8BB4F6]" />
-          </motion.div>
-          <h1 className="text-4xl sm:text-6xl font-bold bg-gradient-to-r from-[#8BB4F6] to-[#A78BF6] bg-clip-text text-transparent whitespace-nowrap overflow-hidden text-ellipsis">
-            {displayText}
-            <span className="animate-pulse">|</span>
+    <div className="relative min-h-screen/2 flex flex-col items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute w-full h-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]" />
+      </div>
+      
+      <div className="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-slate-950 to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-slate-950 to-transparent" />
+
+      {/* Main content */}
+      <div className="relative z-10 text-center w-full max-w-5xl px-4 sm:px-6 py-16 sm:py-24">
+        {/* Floating icons */}
+        <div className="absolute inset-0 pointer-events-none">
+          <Bot className="absolute top-1/4 left-1/4 w-8 h-8 text-blue-400/20 animate-float" />
+          <Cpu className="absolute bottom-1/4 right-1/4 w-8 h-8 text-purple-400/20 animate-float-delayed" />
+        </div>
+
+        {/* Title section */}
+        <div className="flex items-center justify-center space-x-4">
+          <div className="relative">
+            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-75 blur group-hover:opacity-100 animate-pulse" />
+            <div className="relative">
+              <Sparkles className="w-12 h-12 text-blue-400 animate-spin-slow" />
+            </div>
+          </div>
+          
+          <h1 className="text-5xl sm:text-7xl font-bold">
+            <span className="bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+              {displayText}
+            </span>
+            <span className="animate-blink text-purple-400">|</span>
           </h1>
         </div>
-        
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="text-gray-400 text-lg sm:text-xl mt-1 sm:mt-8"
-        >
-          Your Intelligent Academic Assistant
-        </motion.p>
-      </motion.div>
+
+        {/* Subtitle with animated gradient border */}
+        <div className="relative mt-8 inline-block">
+          <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 opacity-50 blur" />
+          <p className="relative px-6 py-2 text-xl sm:text-2xl text-gray-300 bg-slate-900/50 rounded-lg backdrop-blur-sm border border-gray-700">
+            Your Intelligent Academic Assistant
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

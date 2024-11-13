@@ -1,11 +1,38 @@
 // data/navigation.ts
-import { NavSection } from '@/types/navigation';
-import { Menu, X, Home, MessageCircle, CreditCard, Phone } from 'lucide-react';
-export const navigationData: NavSection = {
-    main: [
-        { name: 'Home', icon: Home, href: '/' },
-        {name: 'Chatbot', icon: MessageCircle, href: '/chatbot'},   
-        {name: 'Pricing',icon: CreditCard, href: '/pricing'},
-        {name: 'Contact Us',icon:Phone ,href: '/contact'}
-    ]
+import { Home, MessageCircle, CreditCard, Phone } from 'lucide-react';
+import { IconType } from '@/types/navigation.types';
+
+interface NavigationItem {
+  name: string;
+  href: string;
+  icon: IconType;
+}
+
+interface NavigationData {
+  main: NavigationItem[];
+}
+
+export const navigationData: NavigationData = {
+  main: [
+    {
+      name: 'Home',
+      href: '/',
+      icon: Home
+    },
+    {
+      name: 'Chatbot',
+      href: '/chatbot',
+      icon: MessageCircle
+    },
+    {
+      name: 'Pricing',
+      href: '/pricing',
+      icon: CreditCard
+    },
+    {
+      name: 'Contact',
+      href: '/contact',
+      icon: Phone
+    }
+  ]
 };

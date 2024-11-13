@@ -1,33 +1,32 @@
-// app/page.tsx or pages/index.tsx
-'use client';
-import React, { useState } from 'react';
-import Navbar from '@/components/navbar/navbar';
-import Hero from '@/components/chatbothero/hero';
-import SubjectPicker from '@/components/subjectselect/select';
-import ChatInterface from '@/components/chatinterface/interface';
-
-const ProfessorAI = () => {
-  const [selectedSubject, setSelectedSubject] = useState('');
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
-
-  return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <Navbar />
-      <Hero />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <SubjectPicker 
-          selectedSubject={selectedSubject} 
-          setSelectedSubject={setSelectedSubject} 
-        />
-        <ChatInterface 
-          message={message}
-          setMessage={setMessage}
-          messages={messages}
-        />
-      </div>
-    </div>
-  );
+// app/page.tsx
+import { Metadata } from 'next';
+import HomePage from '@/components/home/HomePage';
+import { Navbar } from '@/components/navbar/navbar';
+export const metadata: Metadata = {
+  title: 'Professor AI - Your Intelligent Academic Assistant',
+  description: 'Experience the future of education with our advanced AI assistant. Get instant answers, personalized learning, and comprehensive academic support.',
+  keywords: [
+    'AI tutor',
+    'academic assistant',
+    'educational AI',
+    'online learning',
+    'personalized tutoring',
+    'Professor AI'
+  ],
+  openGraph: {
+    title: 'Professor AI - Your Intelligent Academic Assistant',
+    description: 'Experience the future of education with our advanced AI assistant',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Professor AI'
+  },
 };
 
-export default ProfessorAI;
+export default function Page() {
+  return (
+    <main className="min-h-screen bg-slate-950">
+      <Navbar />
+      <HomePage />
+    </main>
+  );
+}
