@@ -1,15 +1,9 @@
-// components/Navbar.tsx
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Home, MessageCircle, CreditCard, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const navItems = [
-  { name: 'Home', icon: <Home className="w-5 h-5" />, href: '/' },
-  { name: 'Chatbots', icon: <MessageCircle className="w-5 h-5" />, href: '/chatbots' },
-  { name: 'Pricing', icon: <CreditCard className="w-5 h-5" />, href: '/pricing' },
-  { name: 'Contact', icon: <Phone className="w-5 h-5" />, href: '/contact' }
-];
+import Link from 'next/link';
+import { navigationData } from "@/data/navigation";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,22 +27,22 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <span className="text-xl sm:text-2xl font-medium text-[#8BB4F6]">
+            <Link href="/" className="text-xl sm:text-2xl font-medium text-[#8BB4F6]">
               Professor AI
-            </span>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-8">
-            {navItems.map((item) => (
-              <a
+            {navigationData.main.map((item) => (
+              <Link
                 key={item.name}
                 href={item.href}
                 className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200"
               >
-                <span className="text-[#8BB4F6]">{item.icon}</span>
+                <span className="text-[#8BB4F6]">{React.createElement(item.icon)}</span>
                 <span>{item.name}</span>
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -78,16 +72,16 @@ export const Navbar = () => {
             className="md:hidden bg-[#1a1f36]/95 backdrop-blur-md"
           >
             <div className="px-4 pt-2 pb-3 space-y-1">
-              {navItems.map((item) => (
-                <a
+              {navigationData.main.map((item) => (
+                <Link
                   key={item.name}
                   href={item.href}
                   className="flex items-center space-x-2 text-gray-300 hover:text-white px-3 py-2 rounded-md"
                   onClick={() => setIsOpen(false)}
                 >
-                  <span className="text-[#8BB4F6]">{item.icon}</span>
+                  <span className="text-[#8BB4F6]">{React.createElement(item.icon)}</span>
                   <span>{item.name}</span>
-                </a>
+                </Link>
               ))}
             </div>
           </motion.div>

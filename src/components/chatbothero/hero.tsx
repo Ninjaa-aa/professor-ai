@@ -21,7 +21,7 @@ export const Hero = () => {
   }, [currentIndex]);
 
   return (
-    <div className="relative min-h-[10vh] max-h-[20vh] sm:max-h-[50vh] flex flex-col items-center justify-center bg-[#1a1f36] pt-24 sm:pt-32 pb-10 sm:pb-16">
+    <div className="relative min-h-[10vh] max-h-[20vh] sm:max-h-[50vh] flex flex-col items-center justify-center bg-[#1a1f36]   sm:pt-32 pb-10 sm:pb-16">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

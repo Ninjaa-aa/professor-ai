@@ -1,12 +1,10 @@
-
-// Updated pages/index.tsx or app/page.tsx
+// app/page.tsx or pages/index.tsx
 'use client';
 import React, { useState } from 'react';
-import { HeroSection } from '@/components/chatbothero/hero';
-import { SubjectSelection } from '@/components/subjectselect/select';
-import { FileUpload } from '@/components/fileupload/fileupload';
-import { ChatInterface } from '@/components/chatinterface/interface';
-import { DecorativeElements } from '@/components/decoratriveelements/elements';
+import Navbar from '@/components/navbar/navbar';
+import Hero from '@/components/chatbothero/hero';
+import SubjectPicker from '@/components/subjectselect/select';
+import ChatInterface from '@/components/chatinterface/interface';
 
 const ProfessorAI = () => {
   const [selectedSubject, setSelectedSubject] = useState('');
@@ -15,20 +13,19 @@ const ProfessorAI = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <HeroSection />
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <SubjectSelection 
+      <Navbar />
+      <Hero />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <SubjectPicker 
           selectedSubject={selectedSubject} 
           setSelectedSubject={setSelectedSubject} 
         />
-        <FileUpload />
         <ChatInterface 
           message={message}
           setMessage={setMessage}
           messages={messages}
         />
       </div>
-      <DecorativeElements />
     </div>
   );
 };

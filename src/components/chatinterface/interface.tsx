@@ -1,8 +1,6 @@
-// components/ChatInterface.tsx
-'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Upload, X, Bot, User } from 'lucide-react';
+import { Send, Upload, X, Bot, User, Maximize, Minimize } from 'lucide-react';
 import { Message } from '@/types';
 
 interface ChatInterfaceProps {
@@ -14,16 +12,19 @@ interface ChatInterfaceProps {
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   message,
   setMessage,
-  messages: propMessages
+  messages: propMessages,
 }) => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [chatStarted, setChatStarted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [expanded, setExpanded] = useState(false); // New state for expand
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Start chat when user types or uploads a file
+  // Function to toggle chat area height
+  const toggleExpand = () => setExpanded((prev) => !prev);
+
   useEffect(() => {
     if (message.trim() || selectedFile) {
       setChatStarted(true);
@@ -31,7 +32,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   }, [message, selectedFile]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -41,9 +42,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
   };
@@ -52,7 +53,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setSelectedFile(e.dataTransfer.files[0]);
       setChatStarted(true);
@@ -66,16 +67,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     }
   };
 
-  const getAIResponse = (userMessage: string) => {
-    const responses = [
-      "I understand your question. Let me help you with that step by step.",
-      "That's an interesting topic! Here's what you need to know...",
-      "Great question! Here's how we can approach this...",
-      "Let me explain this concept in detail...",
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
-
   const handleSendMessage = async () => {
     if (!message.trim() && !selectedFile) return;
 
@@ -83,37 +74,35 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       id: Date.now().toString(),
       content: message || `Uploaded file: ${selectedFile?.name}`,
       sender: 'user',
-      timestamp: new Date()
+      timestamp: new Date(),
     };
-    
-    setMessages(prev => [...prev, userMessage]);
+
+    setMessages((prev) => [...prev, userMessage]);
     setMessage('');
     setSelectedFile(null);
     setIsTyping(true);
 
-    // Add initial AI greeting if this is the first message
     if (messages.length === 0) {
       setTimeout(() => {
         const greeting: Message = {
           id: 'greeting',
           content: "Hi! I'm Professor AI. How can I help you with your studies today?",
           sender: 'ai',
-          timestamp: new Date()
+          timestamp: new Date(),
         };
-        setMessages(prev => [...prev, greeting]);
+        setMessages((prev) => [...prev, greeting]);
         setIsTyping(true);
       }, 500);
     }
 
-    // Simulate AI response
     setTimeout(() => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: getAIResponse(userMessage.content),
+        content: "I'm here to help you with any questions you have.",
         sender: 'ai',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages((prev) => [...prev, aiMessage]);
       setIsTyping(false);
     }, 1500);
   };
@@ -125,16 +114,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     }
   };
 
-  const formatTime = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true
-    }).format(date);
-  };
-
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -142,52 +123,30 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 overflow-hidden max-w-2xl mx-auto"
     >
       {/* Chat Messages Area */}
-      <div className="h-[300px] p-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+      <div
+        className={`p-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent ${
+          expanded ? 'h-[300px]' : 'h-[150px]'
+        }`}
+      >
         {!chatStarted ? (
           <div className="flex flex-col items-center justify-center h-full">
-            <div 
+            <div
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              className={`
-                w-full
-                max-w-[500px]
-                min-h-[80px]
-                flex
-                items-center
-                justify-center
-                ${dragActive 
-                  ? 'bg-blue-400/10' 
-                  : 'hover:bg-gray-800/50'
-                }
-              `}
+              className={`w-full max-w-[500px] min-h-[80px] flex items-center justify-center ${
+                dragActive ? 'bg-blue-400/10' : 'hover:bg-gray-800/50'
+              }`}
             >
-              <div 
-                className={`
-                  w-[90%]
-                  py-6
-                  px-8
-                  flex
-                  flex-col
-                  items-center
-                  justify-center
-                  border
-                  border-dashed
-                  rounded-lg
-                  transition-all
-                  duration-200
-                  ${dragActive 
-                    ? 'border-blue-400' 
-                    : 'border-gray-700/50 hover:border-blue-400/50'
-                  }
-                `}
+              <div
+                className={`w-[90%] py-6 px-8 flex flex-col items-center justify-center border border-dashed rounded-lg transition-all duration-200 ${
+                  dragActive ? 'border-blue-400' : 'border-gray-700/50 hover:border-blue-400/50'
+                }`}
               >
                 <Upload className="w-5 h-5 text-gray-400 mb-2" />
                 <div className="flex flex-wrap items-center justify-center text-center">
-                  <span className="text-sm text-gray-400">
-                    Drag and drop your files here or{' '}
-                  </span>
+                  <span className="text-sm text-gray-400">Drag and drop your files here or </span>
                   <label className="text-sm text-[#8BB4F6] hover:text-[#A78BF6] cursor-pointer transition-colors ml-1">
                     browse
                     <input
@@ -198,14 +157,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                     />
                   </label>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  PDF, DOC, TXT files
-                </p>
+                <p className="text-xs text-gray-500 mt-1">PDF, DOC, TXT files</p>
               </div>
             </div>
-            <p className="text-gray-500 text-sm mt-3">
-              or start a conversation
-            </p>
+            <p className="text-gray-500 text-sm mt-3">or start a conversation</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -220,9 +175,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 }`}
               >
                 {/* Avatar */}
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  msg.sender === 'ai' ? 'bg-blue-500/20' : 'bg-purple-500/20'
-                }`}>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    msg.sender === 'ai' ? 'bg-blue-500/20' : 'bg-purple-500/20'
+                  }`}
+                >
                   {msg.sender === 'ai' ? (
                     <Bot className="w-5 h-5 text-blue-400" />
                   ) : (
@@ -232,15 +189,17 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
                 {/* Message Bubble */}
                 <div className="max-w-[80%]">
-                  <div className={`rounded-lg px-4 py-2 ${
-                    msg.sender === 'ai' 
-                      ? 'bg-gray-800 text-gray-200' 
-                      : 'bg-blue-500/20 text-gray-200'
-                  }`}>
+                  <div
+                    className={`rounded-lg px-4 py-2 ${
+                      msg.sender === 'ai'
+                        ? 'bg-gray-800 text-gray-200'
+                        : 'bg-blue-500/20 text-gray-200'
+                    }`}
+                  >
                     <p className="text-sm">{msg.content}</p>
                   </div>
                   <span className="text-xs text-gray-500 mt-1 block">
-                    {formatTime(msg.timestamp)}
+                    {new Date(msg.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
               </motion.div>
@@ -263,53 +222,33 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 </div>
               </motion.div>
             )}
-            <div ref={messagesEndRef} />
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
-      <div className="border-t border-gray-700/50 p-3 space-y-2">
-        {selectedFile && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-between bg-gray-700/30 rounded-lg px-3 py-1.5"
-          >
-            <span className="text-sm text-gray-300 truncate">
-              {selectedFile.name}
-            </span>
-            <button
-              onClick={() => setSelectedFile(null)}
-              className="text-gray-400 hover:text-gray-200 transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </motion.div>
-        )}
-
-        <div className="relative flex items-center">
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyPress}
-            placeholder="Ask your question..."
-            rows={1}
-            className="w-full bg-gray-900/50 rounded-lg pl-3 pr-10 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#8BB4F6] border border-gray-700/50 resize-none"
-          />
-          <motion.button 
-            onClick={handleSendMessage}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="absolute right-2 p-1.5 text-[#8BB4F6] hover:text-[#A78BF6] transition-colors disabled:opacity-50"
-            disabled={!message.trim() && !selectedFile}
-          >
-            <Send className="w-4 h-4" />
-          </motion.button>
-        </div>
+      {/* Footer */}
+      <div className="flex items-center border-t border-gray-700/50 px-4 py-3 space-x-2">
+      <button
+          onClick={toggleExpand}
+          className="text-gray-400 hover:text-gray-300 transition"
+          title={expanded ? 'Collapse' : 'Expand'}
+        >
+          {expanded ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+        </button>
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder="Type your message..."
+          className="flex-1 bg-transparent border-none focus:outline-none text-gray-200 text-sm"
+        />
+        <button onClick={handleSendMessage} className="text-blue-500 hover:text-blue-400 transition">
+          <Send className="w-5 h-5" />
+        </button>
       </div>
     </motion.div>
   );
 };
-
 export default ChatInterface;
